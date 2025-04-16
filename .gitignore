@@ -1,0 +1,5 @@
+modelTextCNN/*
+!modelTextCNN/.gitkeep
+
+modelTransformer/*
+!modelTransformer/.gitkeep
