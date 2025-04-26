@@ -1,0 +1,7 @@
+pandas
+numpy
+torch==2.3.0
+transformers
+hydra-core
+pyvi
+torchtext

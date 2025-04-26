@@ -1,0 +1,4 @@
+_target_: src.train.Trainer
+n_epochs: 10
+# clip_grad: 1.0
+# val_every: 1

@@ -1,0 +1,15 @@
+max_len: 300
+vocab_size: 25000
+batch_size: 64
+specials:
+  - "<pad>"
+  - "<unk>"
+
+train:
+  data_path: "cleaned_data/train.csv"
+
+val:
+  data_path: "cleaned_data/valid.csv"
+
+test:
+  data_path: "cleaned_data/test.csv"

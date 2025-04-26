@@ -3,3 +3,8 @@ modelTextCNN/*
 
 modelTransformer/*
 !modelTransformer/.gitkeep
+
+env/*
+outputs/*
+checkpoints/*
+*.pyc
