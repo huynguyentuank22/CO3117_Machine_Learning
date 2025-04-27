@@ -1,0 +1,7 @@
+_target_: src.models.rnn.SentimentSimpleRNN
+vocab_size: ??
+embed_dim: 128
+hidden_dim: 256
+num_layers: 2
+bidir: true
+dropout: 0.4

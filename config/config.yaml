@@ -1,0 +1,9 @@
+defaults:
+  - data: custom_data
+  - model: lstm           # can be overridden with model=gru
+  - trainer: default
+  - optim: adamw
+  - _self_                # include any fields defined right here
+
+seed: 42                  # “global” values you rarely override
+device: cuda
