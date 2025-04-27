@@ -5,3 +5,5 @@ transformers
 hydra-core
 pyvi
 torchtext
+transformers
+tqdm
