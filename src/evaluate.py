@@ -9,6 +9,7 @@ from src.utils import set_all_seed# same helpers as before
 from src.models.lstm import SentimentLSTM
 from src.models.gru import SentimentGRU
 from src.models.rnn import SentimentSimpleRNN
+from src.models.transformer import SentimentTransformer
 
 # src/main.py
 import logging
@@ -27,14 +28,14 @@ def main(cfg: DictConfig) -> None:
     # MODEL + OPTIM --------------------------------------------------------
     # cfg.model.vocab_size = len(vocab)
     logger.info(f"Loading model {cfg.model._target_} with vocab size{len(vocab)}...")
-    model = SentimentLSTM(
-        vocab_size=len(vocab),
-        embed_dim=cfg.model.embed_dim,
-        hidden_dim=cfg.model.hidden_dim,
-        num_layers=cfg.model.num_layers,
-        bidir=cfg.model.bidir,
-        dropout=cfg.model.dropout
-    )
+    # model = SentimentLSTM(
+    #     vocab_size=len(vocab),
+    #     embed_dim=cfg.model.embed_dim,
+    #     hidden_dim=cfg.model.hidden_dim,
+    #     num_layers=cfg.model.num_layers,
+    #     bidir=cfg.model.bidir,
+    #     dropout=cfg.model.dropout
+    # )
     
     # model = SentimentGRU(
     #     vocab_size=len(vocab),
@@ -54,6 +55,18 @@ def main(cfg: DictConfig) -> None:
     #     dropout=cfg.model.dropout
     # )
     
+    model = SentimentTransformer(
+        n_layers=cfg.model.n_layers,
+        n_heads=cfg.model.n_heads,
+        d_model=cfg.model.d_model,
+        ff_hidden=cfg.model.ff_hidden,
+        vocab_size=len(vocab),   # for embedding
+        max_len=cfg.data.max_len,      # max toks in sentence, for positional encoding
+        activation=cfg.model.activation,
+        pool=cfg.model.pool,      # "cls", "mean", "max"
+        dropout=cfg.model.dropout
+    )
+    
     model.eval()
     
     # Load the model state
@@ -61,6 +74,10 @@ def main(cfg: DictConfig) -> None:
     # checkpoint_path = "checkpoints/best_SentimentGRU_epoch_2.pt"
     # checkpoint_path = "checkpoints/best_SentimentSimpleRNN_epoch_2.pt"
     # checkpoint_path = "checkpoints/best_SentimentSimpleRNN_epoch_8.pt"
+    checkpoint_path = "checkpoints/best_SentimentTransformer_epoch_3.pt"
+    checkpoint_path = "checkpoints/best_SentimentTransformer_epoch_4.pt"
+    checkpoint_path = "checkpoints/best_SentimentTransformer_epoch_27.pt"
+    
     state_dict = torch.load(checkpoint_path)
     model.load_state_dict(state_dict['model_state_dict'])
     model.to(cfg.device)
