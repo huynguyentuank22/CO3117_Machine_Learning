@@ -1,0 +1,8 @@
+_target_: models.transformer.SentimentTransformer
+n_layers: 6
+n_heads: 8
+d_model: 128
+ff_hidden: 256
+activation: 'relu'
+pool: 'cls'     # "cls", "mean", "max"
+dropout: 0.1

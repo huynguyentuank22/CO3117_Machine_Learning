@@ -48,9 +48,14 @@ This project focuses on Vietnamese sentiment analysis, aiming to classify textua
 
 | Models | Accuracy |
 |--------|----------|
-| PhoBERT | 0.9189   |
+| Transformer (PhoBERT pretrained) | 0.9189 |
+| Transformer (VisoBERT pretrained) | 0.9111 |
+| GRU | 0.898 |
 | TextCNN |  0.8814 | 
+| LSTM | 0.8778 |
+| Transformer | 0.8739 |
 | SVM | 0.8698 | 
+| RNN | 0.7134 | 
 
 ## 🚀 **Usage**
 
@@ -73,18 +78,34 @@ This project focuses on Vietnamese sentiment analysis, aiming to classify textua
         # Install dependencies
         pip install -r requirements.txt
 
+3. How to train and evaluate the model?
+    - For Naive Bayes, SVM, PhoBERT, VisoBERT: run the corresponding notebook
+    - For RNN, GRU, LSTM, Transformer trained from scratch: run the corresponding scripts int `scripts/`
+        - You can train the hyperparameters in `config/` folder
+        - To evaluate, change the path to checkpoint and choose the correponding model in `evaluate.py` before running `evaluate.sh`
+
 ## 🗂️ **Project Structure**
 
 ```
 CO3117_Machine_Learning/
 ├── data/                     # Dataset storage
 ├── cleaned_data/             # Cleaned dataset storage
+├── config                    # Contain configurations for trainer, models, optimizers, data
+├── src
+    ├── models                # Contain RNN, LSTM, GRU models
+    ├── data.py
+    ├── evaluate.py
+    ├── main.py
+    ├── train.py
+    ├── utils.py
+├── scripts                   # Contain training and evaluating scripts
 ├── modelTextCNN/             # Saved TextCNN model
 ├── modelTransformer/         # Saved PhoBert model
 ├── preprocessing.ipynb       # Jupyter notebooks for text preprocessing
 ├── textCNN.ipynb             # Jupyter notebooks for training and evaluate TextCNN model
 ├── SVM.ipynb                 # Jupyter notebooks for training and evaluate SVM model
 ├── transformer.ipynb         # Jupyter notebooks for training and evaluate PhoBert model
+├── transformer_visobert.ipynb         # Jupyter notebooks for training and evaluate PhoBert model
 ├── .gitignore
 ├── README.md
 └── requirements.txt          # Python dependencies

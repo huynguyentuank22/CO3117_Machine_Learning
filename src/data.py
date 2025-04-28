@@ -70,7 +70,7 @@ def build_loaders(cfg):
     train_dataset = CustomDataset(train_df["sentence"], train_df["label"])
     val_dataset = CustomDataset(val_df["sentence"], val_df["label"])
 
-    vocab = build_vocab_from_iterator(yield_tokens(full_df["sentence"]), specials=cfg.specials)  # or 
+    vocab = build_vocab_from_iterator(yield_tokens(full_df["sentence"]), specials=cfg.specials)  # <pad>: 0, <unk>: 1 
     vocab.set_default_index(vocab[cfg.specials[1]])    # <unk>
 
     train_loader = CustomDataLoader(train_dataset, vocab, cfg.batch_size, shuffle=True, cfg=cfg)

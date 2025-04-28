@@ -24,8 +24,14 @@ def main(cfg: DictConfig) -> None:
 
     # MODEL + OPTIM --------------------------------------------------------
     # cfg.model.vocab_size = len(vocab)
-    logger.info(f"Loading model {cfg.model._target_} with vocab size{len(vocab)}...")
-    model = instantiate(cfg.model, vocab_size=len(vocab)).to(cfg.device)
+    print(f"Loading model {cfg.model._target_} with vocab size{len(vocab)}...")
+    
+    if cfg.model._target_ == "models.transformer.SentimentTransformer":
+        logger.info(f"The model is a transformer, setting max_len to {cfg.data.max_len}")
+        model = instantiate(cfg.model, vocab_size=len(vocab), max_len=cfg.data.max_len).to(cfg.device)
+    else:
+        model = instantiate(cfg.model, vocab_size=len(vocab)).to(cfg.device)
+        
     logger.info(f"Instantiating optimizer: {cfg.optim._target_}...")
     optim = instantiate(cfg.optim, params=model.parameters())
     loss_fn  = torch.nn.BCEWithLogitsLoss()
