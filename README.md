@@ -1,7 +1,7 @@
 # **Vietnamese Sentiment Analysis**
 
 ## 📝 **Introduction**
-This project focuses on Vietnamese sentiment analysis, aiming to classify textual data into sentiment categories such as positive and negative. To achieve this, we implement and compare the performance of three distinct models:
+This project focuses on Vietnamese sentiment analysis, aiming to classify textual data into sentiment categories such as positive and negative. To achieve this, we implement and compare the performance of distinct models:
 
 - **TextCNN**: A convolutional neural network architecture effective for capturing local features in text sequences.
 
@@ -207,8 +207,9 @@ CO3117_Machine_Learning/
 ├── preprocessing.ipynb       # Jupyter notebooks for text preprocessing
 ├── textCNN.ipynb             # Jupyter notebooks for training and evaluate TextCNN model
 ├── SVM.ipynb                 # Jupyter notebooks for training and evaluate SVM model
+├── Naive_Bayes.ipynb         # Jupyter notebooks for training and evaluate Naive Bayes model
 ├── transformer.ipynb         # Jupyter notebooks for training and evaluate PhoBert model
-├── transformer_visobert.ipynb         # Jupyter notebooks for training and evaluate PhoBert model
+├── transformer_visobert.ipynb         # Jupyter notebooks for training and evaluate VisoBert model
 ├── .gitignore
 ├── README.md
 └── requirements.txt          # Python dependencies
