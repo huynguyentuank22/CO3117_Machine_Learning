@@ -7,7 +7,19 @@ This project focuses on Vietnamese sentiment analysis, aiming to classify textua
 
 - **PhoBERT**: A state-of-the-art pre-trained language model tailored for Vietnamese, based on the RoBERTa architecture, known for its superior performance in various Vietnamese NLP tasks.
 
+- **ViSoBERT**: A BERT-base variant further pretrained on 7 GB of Vietnamese social-media text (tweets, forums, Facebook), using whole-word and dynamic masking to model informal, noisy language—delivering strong gains on sentiment classification and slang detection.
+
 - **Support Vector Machine (SVM)**: A traditional machine learning algorithm that excels in high-dimensional spaces, often used for text classification tasks.
+
+- **RNN**: A vanilla recurrent neural network that processes tokens one at a time, maintaining a hidden state to capture sequential dependencies; it is simple and fast but can struggle to learn long‐range patterns due to vanishing gradients.
+
+- **GRU**: A gated recurrent unit network that introduces update and reset gates to control information flow, offering many of LSTM’s benefits (remembering long‐term dependencies) with fewer parameters and faster training.
+
+- **LSTM**: A long short-term memory network equipped with input, forget, and output gates, explicitly designed to retain information over long sequences and overcome the vanishing-gradient problem in RNNs.
+
+- **Transformer**: A self-attention–based architecture built from multi-head attention and position-wise feed-forward layers, which captures global context in parallel and has become the dominant model for modern NLP tasks.
+
+- **Naïve Bayes**: A probabilistic classifier applying Bayes’ theorem under a strong feature-independence assumption; prized for its simplicity, interpretability, and surprisingly robust baseline performance in text classification.
 
 ## 📁 **Dataset**
 
@@ -38,6 +50,97 @@ This project focuses on Vietnamese sentiment analysis, aiming to classify textua
     - **Pre-trained Model**: Loads vinai/phobert-base with a tokenizer and sequence classification head (2 labels).
     - **Tokenization**: Sentences are tokenized with padding and truncation (max length: 256).
     - **Fine-tuning**: The model is trained on a custom dataset using AdamW optimizer (lr=2e-5) and a linear learning rate scheduler for 3 epochs.
+
+- **ViSoBERT**
+
+    - **Model & Tokenizer Initialization**  
+        - Load the `uitnlp/visobert` weights via HuggingFace’s `AutoModelForSequenceClassification` (num_labels=2).  
+        - Use the matching SentencePiece tokenizer for subword tokenization.  
+
+    - **Fine-tuning Configuration**  
+        - Optimizer: AdamW with `lr = 2e-5`.
+        - Learning-rate scheduler: linear warm-up over the first 500 steps then linear decay. 
+        - Loss: `CrossEntropyLoss` on model logits.
+
+    - **Training & Evaluation**  
+        - Shuffle training data each epoch and evaluate on a held-out validation set after each epoch.  
+        - Save the checkpoint that achieves the highest validation accuracy.  
+
+- **RNN**
+
+    - **Data Preprocessing**  
+        - Normalize text (lowercase, strip punctuation) and tokenize on whitespace.  
+        - Build a vocabulary and convert each token to its integer ID.  
+        - Pad or truncate all sequences to a fixed length (max_length = 300).
+
+    - **Model Architecture**  
+        - **Embedding Layer**: Maps each token ID to a 128-dimensional vector.  
+        - **Recurrent Layer**: A 2-layer vanilla RNN with 256 hidden units per layer, bidirectional, and 0.4 dropout between layers.  
+        - **Sequence Pooling**: Take the final hidden state from both directions and concatenate → a 512-dim vector.  
+        - **Classification Head**: Linear(512 → 2) producing logits for positive/negative.
+
+    - **Training Setup**  
+        - Optimizer: AdamW, learning rate = 2×10⁻³.  
+        - Loss: CrossEntropyLoss.  
+        - Batch size: 64; epochs: 10; no LR scheduler.  
+        - Shuffle training data each epoch and evaluate on a held-out validation split.
+
+---
+
+- **GRU**
+
+    - **Data Preprocessing**  
+        - Same as RNN: tokenize, pad/truncate to length 300.
+
+    - **Model Architecture**  
+        - **Embedding Layer**: 128-dim embeddings.  
+        - **Recurrent Layer**: 2-layer GRU with 256 hidden units, bidirectional, dropout = 0.4.  
+        - **Sequence Pooling**: Concatenate final forward and backward hidden states (512-dim).  
+        - **Classification Head**: Linear(512 → 2).
+
+    - **Training Setup**  
+        - AdamW optimizer, lr = 2e-3; CrossEntropyLoss; batch_size = 64; epochs = 10; no scheduler.  
+        - Monitor validation accuracy and pick the best checkpoint.
+
+---
+
+- **LSTM**
+
+    - **Data Preprocessing**  
+        - Identical to the RNN/GRU pipelines.
+
+    - **Model Architecture**  
+        - **Embedding Layer**: 128-demb.  
+        - **Recurrent Layer**: 2-layer LSTM with 256 hidden units in each direction, dropout = 0.4 on outputs.  
+        - **Sequence Pooling**: Concatenate the last hidden states of both directions (512-d).  
+        - **Classification Head**: Linear(512 → 2).
+
+    - **Training Setup**  
+        - Use AdamW (lr=2e-3), CrossEntropyLoss, batch_size=64, epochs=10, no LR scheduler.  
+        - Early-stop if validation loss plateaus for 3 epochs.
+
+---
+
+- **Transformer (trained from scratch)**
+
+    - **Data Preprocessing**  
+        - Tokenize with a learned Subword vocabulary and pad/truncate to max_length = 300.  
+        - Add special `[CLS]` tokens as needed.
+
+    - **Model Architecture**  
+        - **Embedding & Positional Encoding**: Map tokens into 128-d vectors and add learned/sinusoidal positional embeddings.  
+        - **Encoder Stack**: 6 Transformer encoder layers, each with  
+            - 8 attention heads over 128-d model,  
+            - a 256-unit feed-forward sublayer (with ReLU),  
+            - dropout = 0.1 on attention weights and FF outputs.  
+        - **Pooling**: Take the `[CLS]` token’s final embedding as sequence representation.  
+        - **Classification Head**: Linear(128 → 1).
+
+    - **Training Setup**  
+        - Optimizer: AdamW, lr = 2×10^{-5}; no LR scheduler.  
+        - Loss: CrossEntropyLoss; batch_size = 64; epochs = 30.  
+        - Select the model checkpoint achieving highest validation accuracy.  
+
 
 - **SVM**
 
